@@ -14,7 +14,12 @@ class PhotoSearchPresenter(private val view: PhotoSearchView, private val search
         fun showError()
     }
 
-    fun onCreate() {
+    fun onCreate(isRecreating: Boolean = false) {
+        if (isRecreating) {
+            view.showProgressBar(false)
+            return
+        }
+
         view.showProgressBar(true)
         searchService.search(text)
                 .enqueue(object : Callback<PhotoResults> {

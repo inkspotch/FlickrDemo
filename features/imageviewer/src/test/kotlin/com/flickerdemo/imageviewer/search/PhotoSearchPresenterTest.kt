@@ -98,6 +98,22 @@ class PhotoSearchPresenterTest {
         verify(view).showError()
     }
 
+
+    @Test
+    fun should_hide_progress_bar_on_recreating() {
+        // Arrange
+        val view = PhotoSearchPresenter.PhotoSearchView::class.mock()
+        val searchService = getFailureService()
+
+        val presenter = PhotoSearchPresenter(view, searchService, searchText)
+
+        // Act
+        presenter.onCreate(true)
+
+        // Assert
+        verify(view).showProgressBar(false)
+    }
+
     private fun getSuccessfulService(): SearchService {
         val searchService = SearchService::class.mock()
         val response = PhotoResults(PagedResults(1, 1, photos))

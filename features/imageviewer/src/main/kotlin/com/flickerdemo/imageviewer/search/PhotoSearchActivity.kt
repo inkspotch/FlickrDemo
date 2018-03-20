@@ -2,8 +2,9 @@ package com.flickerdemo.imageviewer.search
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -16,12 +17,14 @@ import com.flickerdemo.imageviewer.injection.ImageViewerComponent
 import com.flickerdemo.imageviewer.injection.InjectableActivity
 import com.flickerdemo.imageviewer.util.ImageLoader
 import kotlinx.android.synthetic.main.activity_photo_search.*
+import java.util.*
 import javax.inject.Inject
 
 class PhotoSearchActivity : InjectableActivity(), PhotoSearchPresenter.PhotoSearchView {
     companion object {
 
         private const val EXTRA_SEARCH_TEXT = "search_text"
+        private const val KEY_PHOTOS = "photos"
 
         fun create(context: Context, searchText: String): Intent {
             return Intent(context, PhotoSearchActivity::class.java)
@@ -44,10 +47,28 @@ class PhotoSearchActivity : InjectableActivity(), PhotoSearchPresenter.PhotoSear
 
         val searchText = intent.getStringExtra(EXTRA_SEARCH_TEXT)
 
-        photoList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        val isPortrait = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+        photoList.layoutManager = GridLayoutManager(this, if (isPortrait) 1 else 2)
         photoList.adapter = PhotoListAdapter()
         presenter = PhotoSearchPresenter(this, searchService, searchText)
-        presenter.onCreate()
+
+        val isRecreating = savedInstanceState != null
+
+        if (isRecreating) {
+            val parcelableArray = savedInstanceState!!.getParcelableArray(KEY_PHOTOS)
+            val photos = Arrays.copyOf(parcelableArray, parcelableArray.size, Array<Photo>::class.java)
+
+            show(photos)
+        }
+
+        presenter.onCreate(isRecreating)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        val photos = (photoList.adapter as PhotoListAdapter).getPhotos()
+        outState.putParcelableArray(KEY_PHOTOS, photos)
     }
 
     inner class PhotoListAdapter(private val photos: MutableList<Photo> = ArrayList()) : RecyclerView.Adapter<PhotoViewHolder>() {
@@ -69,6 +90,10 @@ class PhotoSearchActivity : InjectableActivity(), PhotoSearchPresenter.PhotoSear
             this.photos.addAll(photos)
 
             notifyItemRangeInserted(changedIndex, photos.size)
+        }
+
+        fun getPhotos(): Array<Photo> {
+            return photos.toTypedArray()
         }
     }
 

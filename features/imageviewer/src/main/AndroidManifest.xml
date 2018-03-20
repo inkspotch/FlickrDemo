@@ -3,7 +3,7 @@
     package="com.flickerdemo.imageviewer">
 
     <application>
-        <activity android:name="com.flickerdemo.imageviewer.MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter android:order="1">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -21,7 +21,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.flickerdemo.imageviewer.search.PhotoSearchActivity" />
+        <activity android:name=".search.PhotoSearchActivity" />
+        <activity android:name=".search.ImageActivity" />
     </application>
 
 </manifest>

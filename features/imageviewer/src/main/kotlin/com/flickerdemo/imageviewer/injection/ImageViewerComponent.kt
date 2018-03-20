@@ -1,6 +1,7 @@
 package com.flickerdemo.imageviewer.injection
 
 import com.flickerdemo.ApplicationComponent
+import com.flickerdemo.imageviewer.search.ImageActivity
 import com.flickerdemo.imageviewer.search.PhotoSearchActivity
 import dagger.Component
 
@@ -8,4 +9,5 @@ import dagger.Component
         modules = arrayOf(ImageViewerModule::class))
 interface ImageViewerComponent {
     fun inject(activity: PhotoSearchActivity)
+    fun inject(activity: ImageActivity)
 }

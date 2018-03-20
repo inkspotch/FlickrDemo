@@ -12,6 +12,7 @@ class PhotoSearchPresenter(private val view: PhotoSearchView, private val search
         fun show(photos: Array<Photo>)
         fun showProgressBar(show: Boolean)
         fun showError()
+        fun openPhoto(url: String)
     }
 
     fun onCreate(isRecreating: Boolean = false) {
@@ -41,5 +42,9 @@ class PhotoSearchPresenter(private val view: PhotoSearchView, private val search
                         view.showError()
                     }
                 })
+    }
+
+    fun photoClicked(photo: Photo) {
+        view.openPhoto(photo.largeUrl())
     }
 }

@@ -36,4 +36,8 @@ data class Photo(val title: String, val farm: Int, val server: String, val id: S
     fun smallUrl(): String {
         return "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_m.jpg"
     }
+
+    fun largeUrl(): String {
+        return "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_b.jpg"
+    }
 }

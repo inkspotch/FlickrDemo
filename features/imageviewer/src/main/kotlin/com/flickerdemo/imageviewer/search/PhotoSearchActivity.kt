@@ -48,6 +48,7 @@ class PhotoSearchActivity : InjectableActivity(), PhotoSearchPresenter.PhotoSear
         val searchText = intent.getStringExtra(EXTRA_SEARCH_TEXT)
 
         val isPortrait = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+
         photoList.layoutManager = GridLayoutManager(this, if (isPortrait) 1 else 2)
         photoList.adapter = PhotoListAdapter()
         presenter = PhotoSearchPresenter(this, searchService, searchText)
@@ -113,6 +114,10 @@ class PhotoSearchActivity : InjectableActivity(), PhotoSearchPresenter.PhotoSear
         error.visibility = View.VISIBLE
     }
 
+    override fun openPhoto(url: String) {
+        startActivity(ImageActivity.create(this, url))
+    }
+
     inner class PhotoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val image: ImageView = view.findViewById(R.id.image)
 
@@ -120,6 +125,8 @@ class PhotoSearchActivity : InjectableActivity(), PhotoSearchPresenter.PhotoSear
             image.setImageDrawable(null)
 
             imageLoader.load(photo.smallUrl(), image)
+
+            image.setOnClickListener({ _ -> presenter.photoClicked(photo) })
         }
     }
 }

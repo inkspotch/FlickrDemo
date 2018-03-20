@@ -15,6 +15,7 @@ import com.flickerdemo.imageviewer.api.SearchService
 import com.flickerdemo.imageviewer.api.output.Photo
 import com.flickerdemo.imageviewer.injection.ImageViewerComponent
 import com.flickerdemo.imageviewer.injection.InjectableActivity
+import com.flickerdemo.imageviewer.util.EndlessOnScrollListener
 import com.flickerdemo.imageviewer.util.ImageLoader
 import kotlinx.android.synthetic.main.activity_photo_search.*
 import java.util.*
@@ -49,8 +50,13 @@ class PhotoSearchActivity : InjectableActivity(), PhotoSearchPresenter.PhotoSear
 
         val isPortrait = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
-        photoList.layoutManager = GridLayoutManager(this, if (isPortrait) 1 else 2)
+        val layoutManager = GridLayoutManager(this, if (isPortrait) 1 else 2)
+        photoList.layoutManager = layoutManager
         photoList.adapter = PhotoListAdapter()
+        photoList.addOnScrollListener(EndlessOnScrollListener(layoutManager) { page ->
+            presenter.nextPage(page)
+        })
+
         presenter = PhotoSearchPresenter(this, searchService, searchText)
 
         val isRecreating = savedInstanceState != null

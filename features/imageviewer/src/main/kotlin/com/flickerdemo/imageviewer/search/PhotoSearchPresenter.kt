@@ -15,6 +15,8 @@ class PhotoSearchPresenter(private val view: PhotoSearchView, private val search
         fun openPhoto(url: String)
     }
 
+    private var totalPages = 0
+
     fun onCreate(isRecreating: Boolean = false) {
         if (isRecreating) {
             view.showProgressBar(false)
@@ -29,6 +31,7 @@ class PhotoSearchPresenter(private val view: PhotoSearchView, private val search
                             val body = response.body()
 
                             if (body != null) {
+                                totalPages = body.results.pages
                                 view.show(body.results.photos)
                                 view.showProgressBar(false)
                                 return
@@ -46,5 +49,29 @@ class PhotoSearchPresenter(private val view: PhotoSearchView, private val search
 
     fun photoClicked(photo: Photo) {
         view.openPhoto(photo.largeUrl())
+    }
+
+    fun nextPage(page: Int) {
+        if (page > totalPages) return
+
+        searchService.search(text, page)
+                .enqueue(object : Callback<PhotoResults> {
+                    override fun onResponse(call: Call<PhotoResults>, response: Response<PhotoResults>) {
+                        if (response.isSuccessful) {
+                            val body = response.body()
+
+                            if (body != null) {
+                                view.show(body.results.photos)
+                                return
+                            }
+                        }
+
+                        view.showError()
+                    }
+
+                    override fun onFailure(call: Call<PhotoResults>, t: Throwable) {
+                        view.showError()
+                    }
+                })
     }
 }

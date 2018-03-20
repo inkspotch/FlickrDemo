@@ -1,5 +1,6 @@
 package com.flickerdemo
 
+import android.content.Context
 import dagger.Component
 import retrofit2.Retrofit
 
@@ -7,5 +8,6 @@ import retrofit2.Retrofit
 interface ApplicationComponent {
     fun inject(app: DemoApp)
 
+    fun context(): Context
     fun retrofit(): Retrofit
 }

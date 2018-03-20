@@ -11,7 +11,7 @@ class DemoApp : Application() {
 
         component = DaggerApplicationComponent
                 .builder()
-                .applicationModule(ApplicationModule())
+                .applicationModule(ApplicationModule(this))
                 .build()
 
         component.inject(this)

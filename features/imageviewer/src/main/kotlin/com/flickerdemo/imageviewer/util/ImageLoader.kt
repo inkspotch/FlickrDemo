@@ -1,6 +1,5 @@
 package com.flickerdemo.imageviewer.util
 
-import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.view.Gravity
@@ -14,13 +13,13 @@ import okhttp3.Request
 import java.io.IOException
 import javax.inject.Inject
 
-class ImageLoader @Inject constructor(private val context: Context, private val client: OkHttpClient, private val handler: Handler) {
+class ImageLoader @Inject constructor(private val client: OkHttpClient, private val handler: Handler) {
     fun load(url: String, view: ImageView) {
         view.setTag(R.id.tag_url, url)
         val parent = view.parent as ViewGroup
         parent.removeView(view)
 
-        val progressBar = ProgressBar(context)
+        val progressBar = ProgressBar(view.context)
         progressBar.isIndeterminate = true
         progressBar.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER)
 
